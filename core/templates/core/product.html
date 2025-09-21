@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+
+    <p><strong>Prix:</strong> {{ product.price }} €</p>
+    <p>{{ product.description }}</p>
+
+    <p><a href="{% url 'catalog' %}">Catalogue</a></p>
+    <p><a href="{% url 'home' %}">Accueil</a></p>
+</body>
+</html>

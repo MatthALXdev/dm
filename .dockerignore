@@ -1,0 +1,48 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environnement virtuel
+.venv/
+venv/
+ENV/
+env/
+
+# Base de données locale
+*.sqlite3
+db.sqlite3
+
+# Fichiers de config locale
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation et scripts
+docs/
+scripts/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Tests et cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Fichiers système
+.DS_Store
+Thumbs.db

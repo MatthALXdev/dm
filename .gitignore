@@ -6,13 +6,21 @@ __pycache__/
 /staticfiles/
 /media/
 /.env
+.env.docker
+.env.local
 
 # Venv
 .venv/
 
+# Docker
+postgres_data/
+
 # VS Code
 .vscode/
 
+# Claude AI
+.claude/
 # OS
 .DS_Store
 Thumbs.db
+nuL

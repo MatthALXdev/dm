@@ -18,6 +18,21 @@
 - Pages `catalog` et `product` (détail)
 - ⏱️ Estimation : **4–8 h**
 
+### v0.1.1
+- Dockerisation complète (PostgreSQL 16 + Django 5.2.6)
+- Docker Compose avec hot-reload et healthcheck
+- Configuration `.env.docker.example`
+- Script d'initialisation pour Linux/Nexus
+- ⏱️ Temps réel : **2 h**
+
+### v0.1.2 - Fixes & Configuration
+- **Fix** : Chargement variables d'environnement (passage de `env_file` à interpolation `${VAR}`)
+- **Fix** : Healthcheck PostgreSQL corrigé (`pg_isready -d dm_db`)
+- **Feature** : Fixtures Django avec 3 produits de test (`core/fixtures/initial_data.json`)
+- Migration de `.env.docker` vers `.env` (convention Docker Compose)
+- README mis à jour avec documentation environnements local + Nexus
+- ⏱️ Temps réel : **2 h 30**
+
 ### v0.2.0
 - Intégration Stripe Checkout (session test)
 - Bouton paiement fonctionnel

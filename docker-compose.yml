@@ -1,63 +1,46 @@
-# Version du format docker-compose (optionnel avec Docker Compose v2+)
-version: '3.8'
-
 services:
-  # Service PostgreSQL
   db:
-    image: postgres:16-alpine  # Image officielle PostgreSQL (version 16, alpine = légère)
+    image: postgres:16-alpine
     container_name: dm_postgres
-    restart: unless-stopped  # Redémarre automatiquement sauf si arrêté manuellement
-    
+    restart: unless-stopped
+
     environment:
-      # Variables d'environnement pour initialiser PostgreSQL
-      POSTGRES_DB: ${DB_NAME}       # Nom de la base (depuis .env.docker)
-      POSTGRES_USER: ${DB_USER}     # Utilisateur (depuis .env.docker)
-      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Mot de passe (depuis .env.docker)
-    
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
     volumes:
-      # Volume nommé pour persister les données PostgreSQL
-      # Sans ça, les données sont perdues au redémarrage
       - postgres_data:/var/lib/postgresql/data
     
     ports:
-      # Expose le port 5432 pour accès depuis l'hôte (optionnel, utile pour debug)
       - "5432:5432"
     
     healthcheck:
-      # Vérifie que PostgreSQL est prêt avant de démarrer Django
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-      interval: 5s   # Vérifie toutes les 5 secondes
-      timeout: 5s    # Timeout après 5 secondes
-      retries: 5     # 5 tentatives avant de marquer comme "unhealthy"
+      test: ["CMD-SHELL", "pg_isready -U dm_user -d dm_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # Service Django
   web:
-    build: .  # Construit l'image depuis le Dockerfile local
+    build: .
     container_name: dm_web
     restart: unless-stopped
-    
-    command: python manage.py runserver 0.0.0.0:8000  # Override la CMD du Dockerfile
-    
+
+    command: python manage.py runserver 0.0.0.0:8000
+
     volumes:
-      # Montage du code source en lecture-écriture
-      # Permet de modifier le code sans rebuild (hot-reload)
       - .:/app
-    
+
     ports:
-      - "8000:8000"  # localhost:8000 → conteneur:8000
-    
+      - "8000:8000"
+
     env_file:
-      - .env.docker  # Charge les variables depuis .env.docker
-    
+      - .env
+
     depends_on:
       db:
-        condition: service_healthy  # Attend que PostgreSQL soit prêt
-    
-    # Override de DB_HOST pour pointer vers le service "db"
-    environment:
-      - DB_HOST=db
+        condition: service_healthy
 
-# Volumes nommés (persistance des données)
 volumes:
   postgres_data:
-    driver: local  # Stockage local sur l'hôte
+    driver: local

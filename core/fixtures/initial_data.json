@@ -1,0 +1,35 @@
+[
+  {
+    "model": "core.product",
+    "pk": 1,
+    "fields": {
+      "name": "Pack Nature",
+      "slug": "pack-nature",
+      "description": "10 magnifiques fonds d'écran nature en haute définition",
+      "price": "9.99",
+      "created_at": "2025-10-19T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 2,
+    "fields": {
+      "name": "Pack Abstract",
+      "slug": "pack-abstract",
+      "description": "15 fonds d'écran abstraits et colorés",
+      "price": "14.99",
+      "created_at": "2025-10-19T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 3,
+    "fields": {
+      "name": "Pack Minimal",
+      "slug": "pack-minimal",
+      "description": "20 fonds d'écran minimalistes et élégants",
+      "price": "19.99",
+      "created_at": "2025-10-19T10:00:00Z"
+    }
+  }
+]

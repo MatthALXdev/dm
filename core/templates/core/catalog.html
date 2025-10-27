@@ -1,27 +1,44 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Catalogue</title>
-</head>
-<body>
-    <h1>Catalogue</h1>
+{% extends 'core/base.html' %}
 
-    {% if products %}
-        <ul>
-            {% for product in products %}
-                <li>
-                    <a href="{% url 'product' product.slug %}">
-                        {{ product.name }}
-                    </a>
-                    - {{ product.price }} €
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No products available.</p>
-    {% endif %}
+{% block title %}Catalogue - Pyxalix{% endblock %}
 
-    <p><a href="{% url 'home' %}">Back to Home</a></p>
-</body>
-</html>
+{% block content %}
+<div class="mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Nos fonds d'écran</h2>
+    <p class="text-gray-600 mt-2">Découvrez notre collection premium</p>
+</div>
+
+{% if products %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for product in products %}
+    <a href="{% url 'product' product.slug %}" class="group">
+        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow overflow-hidden">
+            <!-- Image -->
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="aspect-video w-full object-cover">
+            {% else %}
+                <div class="aspect-video bg-gradient-to-br from-indigo-500 to-purple-600"></div>
+            {% endif %}
+
+            <div class="p-4">
+                <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                    {{ product.name }}
+                </h3>
+                <p class="text-gray-600 text-sm mt-1 line-clamp-2">
+                    {{ product.description|truncatewords:10 }}
+                </p>
+                <p class="text-2xl font-bold text-indigo-600 mt-3">
+                    {{ product.price }} EUR
+                </p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+    <p class="text-yellow-800 font-medium">Aucun produit disponible pour le moment.</p>
+    <p class="text-yellow-600 text-sm mt-2">Revenez plus tard pour découvrir notre collection !</p>
+</div>
+{% endif %}
+{% endblock %}

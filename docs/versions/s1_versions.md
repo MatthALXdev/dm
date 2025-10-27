@@ -33,23 +33,27 @@
 - README mis à jour avec documentation environnements local + Nexus
 - ⏱️ Temps réel : **2 h 30**
 
-### v0.2.0
+### v0.2.0 - UI Moderne avec Tailwind CSS
+- **Feature** : Template `base.html` avec Tailwind CSS via CDN
+- **Feature** : Refonte complète catalog, product, thanks pages
+- **Feature** : Design responsive (mobile/tablet/desktop)
+- **Feature** : Branding "Pyxalix" (couleurs indigo, header/footer)
+- **Feature** : Parcours utilisateur complet avec mock payment
+- **Feature** : Vues `purchase()` et `thanks()` ajoutées
+- **UX** : Hover effects, transitions, gradient placeholders
+- ⏱️ Temps réel : **4 h**
+
+### v0.3.0 (prévu)
 - Intégration Stripe Checkout (session test)
+- Modèle `Order` minimal
 - Bouton paiement fonctionnel
-- ⏱️ Estimation : **3–6 h**
+- ⏱️ Estimation : **4–6 h**
 
-### v0.2.1
-- Page `/thanks` (retour utilisateur après paiement)
-- ⏱️ Estimation : **0.5–1 h**
-
-### v0.3.0
+### v0.4.0 (prévu)
 - Webhook Stripe implémenté
-- Création d’un `Order` minimal en DB
+- Création d'un `Order` en DB après paiement
+- Page `/thanks` avec retour utilisateur
 - ⏱️ Estimation : **4–8 h**
-
-### v0.4.0
-- Génération d’un token de téléchargement (mock)
-- ⏱️ Estimation : **2–4 h**
 
 ### v0.5.0
 - Intégration Backblaze B2

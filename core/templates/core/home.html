@@ -1,12 +1,41 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>DM Boutique</title>
-</head>
-<body>
-    <h1>Bienvenue sur DM 🚀</h1>
-    <p>Votre boutique de fonds d’écran numériques.</p>
-    <p><a href="{% url 'catalog' %}">View Catalog</a></p>
-</body>
-</html>
+{% extends 'core/base.html' %}
+
+{% block title %}Accueil - Pyxalix{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <!-- Hero Section -->
+    <div class="mb-12">
+        <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            Bienvenue sur Pyxalix
+        </h1>
+        <p class="text-xl text-gray-600 mb-8">
+            Découvrez notre collection exclusive de fonds d'écran numériques haute qualité
+        </p>
+        <a href="{% url 'catalog' %}" class="inline-block bg-indigo-600 text-white py-3 px-8 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-lg hover:shadow-xl">
+            Voir le catalogue
+        </a>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-8 mt-16">
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="text-indigo-600 text-4xl mb-3">🎨</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Haute qualité</h3>
+            <p class="text-gray-600 text-sm">Des images en résolution 4K et plus pour tous vos écrans</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="text-indigo-600 text-4xl mb-3">⚡</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Téléchargement instantané</h3>
+            <p class="text-gray-600 text-sm">Accédez à vos achats immédiatement après paiement</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="text-indigo-600 text-4xl mb-3">💎</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Collection exclusive</h3>
+            <p class="text-gray-600 text-sm">Des designs uniques créés par des artistes talentueux</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

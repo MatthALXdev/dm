@@ -27,3 +27,18 @@ def catalog_view(request):
 def product_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
     return render(request, "core/product.html", {"product": product})
+
+
+def purchase(request, slug):
+    """Mock payment - redirect direct vers thanks"""
+    if request.method == "POST":
+        product = get_object_or_404(Product, slug=slug)
+        # Mock payment - redirect direct vers thanks
+        return redirect("thanks", slug=slug)
+    return redirect("catalog")
+
+
+def thanks(request, slug):
+    """Page de remerciement après achat"""
+    product = get_object_or_404(Product, slug=slug)
+    return render(request, "core/thanks.html", {"product": product})

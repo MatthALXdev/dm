@@ -26,10 +26,9 @@ services:
     container_name: dm_web
     restart: unless-stopped
 
-    command: python manage.py runserver 0.0.0.0:8000
-
     volumes:
       - .:/app
+      - media_data:/app/media
 
     ports:
       - "8000:8000"
@@ -43,4 +42,6 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  media_data:
     driver: local

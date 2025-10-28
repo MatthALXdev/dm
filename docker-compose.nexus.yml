@@ -66,6 +66,9 @@ services:
     env_file:
       - .env
 
+    environment:
+      - ENVIRONMENT=development  # Enable seed script on Nexus
+
     depends_on:
       db:
         condition: service_healthy

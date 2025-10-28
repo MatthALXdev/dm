@@ -36,8 +36,14 @@ END
 echo "🔄 Running migrations..."
 python manage.py migrate --noinput
 
-echo "🌱 Loading seed data..."
-python seed.py
+# Load seed data only in development/test environments
+# Production uses data migrations instead (see core/migrations/0003_load_initial_products.py)
+if [ "${DJANGO_DEBUG}" = "1" ] || [ "${ENVIRONMENT}" = "development" ]; then
+    echo "🌱 Loading seed data (dev/test mode)..."
+    python seed.py
+else
+    echo "ℹ️  Skipping seed (production mode - using data migrations)"
+fi
 
 echo "✓ Initialization complete!"
 echo "🚀 Starting Django server..."

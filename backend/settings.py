@@ -9,6 +9,10 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-insecure")
 DEBUG = os.getenv("DJANGO_DEBUG", "0") == "1"
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
+# CSRF Configuration for HTTPS
+csrf_origins = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "")
+CSRF_TRUSTED_ORIGINS = csrf_origins.split(",") if csrf_origins else []
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

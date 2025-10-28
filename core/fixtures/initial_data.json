@@ -7,6 +7,7 @@
       "slug": "pack-nature",
       "description": "10 magnifiques fonds d'écran nature en haute définition",
       "price": "9.99",
+      "image": "products/forest_path.png",
       "created_at": "2025-10-19T10:00:00Z"
     }
   },
@@ -18,6 +19,7 @@
       "slug": "pack-abstract",
       "description": "15 fonds d'écran abstraits et colorés",
       "price": "14.99",
+      "image": "products/ocean_waves.png",
       "created_at": "2025-10-19T10:00:00Z"
     }
   },
@@ -29,6 +31,7 @@
       "slug": "pack-minimal",
       "description": "20 fonds d'écran minimalistes et élégants",
       "price": "19.99",
+      "image": "products/montain_sunset.png",
       "created_at": "2025-10-19T10:00:00Z"
     }
   }

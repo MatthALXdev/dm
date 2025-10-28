@@ -28,8 +28,12 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copie du code source
 COPY . .
 
+# Copie du script d'entrypoint et rendre exécutable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Exposition du port 8000 (Django runserver par défaut)
 EXPOSE 8000
 
 # Commande par défaut (peut être overridée dans docker-compose.yml)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["/entrypoint.sh"]

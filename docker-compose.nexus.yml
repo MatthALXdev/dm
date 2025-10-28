@@ -1,22 +1,24 @@
 version: '3.8'
 
 # ===========================================
-# Pyxalix (DM) - Production avec Traefik
+# Pyxalix (DM) - Configuration NEXUS (local)
 # ===========================================
-# Environnement: VPS Production (37.59.115.242)
-# Usage: docker compose up -d
+# Environnement: Serveur Nexus (192.168.1.22)
+# Usage: docker compose -f docker-compose.nexus.yml up -d
 #
-# Architecture:
-# - Backend: Django + PostgreSQL
-# - Traefik: Reverse proxy avec HTTPS automatique
+# Différences vs Production VPS:
+# - Domain: dm.nexus.local (au lieu de pyxalix.devamalix.fr)
+# - EntryPoint: web (HTTP) au lieu de websecure (HTTPS)
+# - Pas de certificat Let's Encrypt
+# - Architecture identique pour tester avant déploiement prod
 
 networks:
   # Network interne pour DB <-> Web
   dm-network:
     driver: bridge
-    name: pyxalix-network
+    name: nexus-dm
 
-  # Network Traefik externe (doit déjà exister sur VPS)
+  # Network Traefik externe (doit déjà exister)
   traefik-network:
     external: true
     name: traefik-network
@@ -24,7 +26,7 @@ networks:
 services:
   db:
     image: postgres:16-alpine
-    container_name: pyxalix_postgres
+    container_name: dm_postgres
     restart: unless-stopped
 
     environment:
@@ -35,10 +37,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-    # Port NON exposé en production (sécurité)
-    # Accessible uniquement via network interne
-    # ports:
-    #   - "5432:5432"
+    # Port exposé pour debug (optionnel)
+    ports:
+      - "5432:5432"
 
     networks:
       - dm-network
@@ -51,20 +52,22 @@ services:
 
   web:
     build: .
-    container_name: pyxalix_web
+    container_name: dm_web
     restart: unless-stopped
 
     volumes:
       - .:/app
       - media_data:/app/media
 
-    # Port NON exposé en production
-    # Accessible uniquement via Traefik
-    # ports:
-    #   - "8000:8000"
+    # Port exposé pour accès direct (fallback sans Traefik)
+    ports:
+      - "8000:8000"
 
     env_file:
       - .env
+
+    environment:
+      - ENVIRONMENT=development  # Enable seed script on Nexus
 
     depends_on:
       db:
@@ -74,22 +77,18 @@ services:
       - dm-network
       - traefik-network
 
-    # Labels Traefik pour routage HTTPS
+    # Labels Traefik pour routage via dm.nexus.local
     labels:
       # Activation Traefik
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
 
-      # Router HTTPS
-      - "traefik.http.routers.pyxalix-web.rule=Host(`pyxalix.devamalix.fr`)"
-      - "traefik.http.routers.pyxalix-web.entrypoints=websecure"
-      - "traefik.http.routers.pyxalix-web.tls.certresolver=letsencrypt"
+      # Router HTTP (pas HTTPS en local)
+      - "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`)"
+      - "traefik.http.routers.dm-web-nexus.entrypoints=web"
 
       # Service (port interne Django)
-      - "traefik.http.services.pyxalix-web.loadbalancer.server.port=8000"
-
-      # Watchtower auto-update (optionnel)
-      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.http.services.dm-web-nexus.loadbalancer.server.port=8000"
 
 volumes:
   postgres_data:

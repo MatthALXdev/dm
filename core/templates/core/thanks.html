@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Merci pour votre achat - Pyxalix{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto text-center">
+    <!-- Success icon -->
+    <div class="bg-green-100 text-green-800 p-6 rounded-lg mb-8">
+        <svg class="w-20 h-20 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <h1 class="text-3xl font-bold">Merci pour votre achat !</h1>
+    </div>
+
+    <!-- Order summary -->
+    <div class="bg-white p-8 rounded-lg shadow-sm">
+        <h2 class="text-xl font-semibold mb-6 text-gray-900">Récapitulatif de commande</h2>
+
+        <div class="border-t border-b border-gray-200 py-4 mb-6">
+            <p class="text-gray-900 font-medium">{{ product.name }}</p>
+            <p class="text-3xl font-bold text-indigo-600 mt-2">{{ product.price }} EUR</p>
+        </div>
+
+        <div class="text-left bg-blue-50 p-4 rounded-lg">
+            <p class="text-sm text-gray-700 mb-2">
+                <strong>Prochaines étapes :</strong>
+            </p>
+            <p class="text-sm text-gray-600">
+                Vous recevrez un email à l'adresse fournie avec le lien de téléchargement de votre fond d'écran dans les prochaines minutes.
+            </p>
+        </div>
+    </div>
+
+    <a href="{% url 'catalog' %}" class="inline-block mt-8 text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+        ← Découvrir d'autres fonds d'écran
+    </a>
+</div>
+{% endblock %}

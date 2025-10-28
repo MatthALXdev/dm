@@ -33,15 +33,20 @@
 - README mis à jour avec documentation environnements local + Nexus
 - ⏱️ Temps réel : **2 h 30**
 
-### v0.2.0 - UI Moderne avec Tailwind CSS
+### v0.2.0 - UI Moderne + Architecture Docker
 - **Feature** : Template `base.html` avec Tailwind CSS via CDN
 - **Feature** : Refonte complète catalog, product, thanks pages
 - **Feature** : Design responsive (mobile/tablet/desktop)
 - **Feature** : Branding "Pyxalix" (couleurs indigo, header/footer)
 - **Feature** : Parcours utilisateur complet avec mock payment
 - **Feature** : Vues `purchase()` et `thanks()` ajoutées
+- **Infra** : Architecture 3 docker-compose (dev/nexus/vps)
+- **Infra** : Tests validés sur Nexus avec Traefik HTTP
+- **Infra** : Containers : `pyxalix_web`, `pyxalix_postgres` (prod)
+- **Docs** : DOCKER-COMPOSE-CONFIGS.md (guide complet)
+- **Docs** : Workflow Git branches (develop-extern/develop-home/main)
 - **UX** : Hover effects, transitions, gradient placeholders
-- ⏱️ Temps réel : **4 h**
+- ⏱️ Temps réel : **6 h** (UI 4h + Infra 2h)
 
 ### v0.3.0 (prévu)
 - Intégration Stripe Checkout (session test)
@@ -73,10 +78,10 @@
 - ⏱️ Estimation : **3–6 h**
 
 ### v0.9.0
-- Déploiement sur VPS Hetzner
-- Nginx + systemd configurés
-- HTTPS via Cloudflare (Full Strict)
-- ⏱️ Estimation : **8–16 h**
+- Déploiement sur VPS OVH (37.59.115.242)
+- Traefik + HTTPS Let's Encrypt
+- Domain : `pyxalix.devamalix.fr`
+- ⏱️ Estimation : **2–4 h** (infra déjà prête)
 
 ### v1.0.0
 - Tests unitaires + E2E (end-to-end)

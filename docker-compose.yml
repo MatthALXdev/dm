@@ -82,7 +82,8 @@ services:
       - "traefik.docker.network=traefik-network"
 
       # Router HTTPS
-      - "traefik.http.routers.pyxalix-web.rule=Host(`pyxalix.devamalix.fr`)"
+      - "traefik.http.routers.pyxalix-web.rule=Host(`pyxalix.devamalix.fr`) && !PathPrefix(`/media/`)"
+      - "traefik.http.routers.pyxalix-web.priority=1"
       - "traefik.http.routers.pyxalix-web.entrypoints=websecure"
       - "traefik.http.routers.pyxalix-web.tls.certresolver=letsencrypt"
 

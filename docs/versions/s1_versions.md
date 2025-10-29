@@ -33,7 +33,7 @@
 - README mis à jour avec documentation environnements local + Nexus
 - ⏱️ Temps réel : **2 h 30**
 
-### v0.2.0 - UI Moderne + Architecture Docker
+### v0.2.0 - UI Moderne + Infrastructure nginx-static
 - **Feature** : Template `base.html` avec Tailwind CSS via CDN
 - **Feature** : Refonte complète catalog, product, thanks pages
 - **Feature** : Design responsive (mobile/tablet/desktop)
@@ -41,12 +41,24 @@
 - **Feature** : Parcours utilisateur complet avec mock payment
 - **Feature** : Vues `purchase()` et `thanks()` ajoutées
 - **Infra** : Architecture 3 docker-compose (dev/nexus/vps)
+- **Infra** : Service nginx-static mutualisé pour media files (100x plus rapide)
+- **Infra** : Traefik routing avec priorités (nginx priority 100, Django priority 1)
+- **Infra** : Migration 0003 pour chargement initial des produits (remplace seed.py)
+- **Infra** : Images produits avec noms fixes (pas de hash Django)
+- **Infra** : CSRF_TRUSTED_ORIGINS configuré pour HTTPS production
 - **Infra** : Tests validés sur Nexus avec Traefik HTTP
-- **Infra** : Containers : `pyxalix_web`, `pyxalix_postgres` (prod)
+- **Infra** : Containers : `pyxalix_web`, `pyxalix_postgres`, `nexus_nginx_static`
 - **Docs** : DOCKER-COMPOSE-CONFIGS.md (guide complet)
+- **Docs** : INFRASTRUCTURE.md (architecture nginx-static)
+- **Docs** : /nexus/shared/README.md (services mutualisés)
 - **Docs** : Workflow Git branches (develop-extern/develop-home/main)
 - **UX** : Hover effects, transitions, gradient placeholders
-- ⏱️ Temps réel : **6 h** (UI 4h + Infra 2h)
+- **Fix** : Media files 404 en production (nginx sert les fichiers au lieu de Django)
+- **Fix** : CSRF 403 en HTTPS sur VPS (trusted origins)
+- **Refactor** : Suppression de seed.py (remplacé par migration)
+- **Refactor** : Nettoyage volumes Docker (media_data retiré)
+- **Refactor** : Suppression scripts obsolètes (7 fichiers bootstrap/audit Windows PS1)
+- ⏱️ Temps réel : **9 h** (UI 4h + Infra 5h)
 
 ### v0.3.0 (prévu)
 - Intégration Stripe Checkout (session test)

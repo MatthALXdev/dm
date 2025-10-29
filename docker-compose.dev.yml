@@ -44,7 +44,7 @@ services:
 
     volumes:
       - .:/app
-      - media_data_dev:/app/media
+      # media/ uses bind mount, Django serves files in DEBUG mode
 
     ports:
       - "8000:8000"  # Exposé pour accès direct
@@ -63,6 +63,4 @@ services:
 
 volumes:
   postgres_data_dev:
-    driver: local
-  media_data_dev:
     driver: local

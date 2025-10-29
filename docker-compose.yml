@@ -56,7 +56,8 @@ services:
 
     volumes:
       - .:/app
-      - media_data:/app/media
+      # media/ is now served by nginx-static, no volume needed
+      # - media_data:/app/media
 
     # Port NON exposé en production
     # Accessible uniquement via Traefik
@@ -94,5 +95,4 @@ services:
 volumes:
   postgres_data:
     driver: local
-  media_data:
-    driver: local
+  # media_data removed: media files are now served by nginx-static

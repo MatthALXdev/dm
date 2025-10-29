@@ -24,12 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-# Serve media files in all environments (dev and production)
-# Note: In a high-traffic production environment, consider using nginx or a CDN
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+# Serve static and media files in development only
+# In production (Nexus/VPS), nginx-static handles media files
 if settings.DEBUG:
-    # Serve static files only in development
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

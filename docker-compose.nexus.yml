@@ -57,7 +57,8 @@ services:
 
     volumes:
       - .:/app
-      - media_data:/app/media
+      # media/ is now served by nginx-static, no volume needed
+      # - media_data:/app/media
 
     # Port exposé pour accès direct (fallback sans Traefik)
     ports:
@@ -66,8 +67,8 @@ services:
     env_file:
       - .env
 
-    environment:
-      - ENVIRONMENT=development  # Enable seed script on Nexus
+    # environment:
+    #   - ENVIRONMENT=development  # Disabled: use data migrations like production
 
     depends_on:
       db:
@@ -84,8 +85,10 @@ services:
       - "traefik.docker.network=traefik-network"
 
       # Router HTTP (pas HTTPS en local)
-      - "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`)"
+      # IMPORTANT: On exclut /media/ qui est servi par nginx-static
+      - "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`) && !PathPrefix(`/media/`)"
       - "traefik.http.routers.dm-web-nexus.entrypoints=web"
+      - "traefik.http.routers.dm-web-nexus.priority=1"
 
       # Service (port interne Django)
       - "traefik.http.services.dm-web-nexus.loadbalancer.server.port=8000"
@@ -93,5 +96,4 @@ services:
 volumes:
   postgres_data:
     driver: local
-  media_data:
-    driver: local
+  # media_data removed: media files are now served by nginx-static

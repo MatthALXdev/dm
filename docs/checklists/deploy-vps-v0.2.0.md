@@ -23,7 +23,7 @@ VPS (37.59.115.242)
 ├── traefik/ (actif, gère recontent.devamalix.fr)
 └── recontent/ (déployé avec HTTPS)
 
-À ajouter : dm/ → pyxalix.devamalix.fr
+À ajouter : dm/ → pyx.devamalix.fr
 ```
 
 **Architecture Nexus (référence):**
@@ -93,18 +93,18 @@ media/
 - `docker-compose.nexus.yml` → Test Nexus HTTP
 - `docker-compose.yml` → **Prod VPS HTTPS** (prêt à deploy)
 
-**✅ Testé sur Nexus :** `http://dm.nexus.local/catalog/` fonctionne
+**✅ Testé sur Nexus :** `http://pyx.nexus.local/catalog/` fonctionne
 
 **Différences principales Nexus ↔ VPS :**
 
 | Config | docker-compose.nexus.yml | docker-compose.yml (VPS) |
 |--------|--------------------------|--------------------------|
-| Domain | `dm.nexus.local` | `pyxalix.devamalix.fr` |
+| Domain | `pyx.nexus.local` | `pyx.devamalix.fr` |
 | EntryPoint | `web` (HTTP) | `websecure` (HTTPS) |
 | TLS | ❌ Non | ✅ `letsencrypt` |
 | Ports exposés | ✅ 8000, 5432 (debug) | ❌ Non (sécurité) |
-| Containers | `dm_web`, `dm_postgres` | `pyxalix_web`, `pyxalix_postgres` |
-| Network | `nexus-dm` | `pyxalix-network` |
+| Containers | `dm_web`, `dm_postgres` | `pyx_web`, `pyx_postgres` |
+| Network | `nexus-dm` | `pyx-network` |
 
 **📖 Documentation :** [DOCKER-COMPOSE-CONFIGS.md](../DOCKER-COMPOSE-CONFIGS.md)
 
@@ -129,14 +129,14 @@ media/
 **Attendre 2-5 minutes, puis tester:**
 
 ```bash
-ping pyxalix.devamalix.fr
+ping pyx.devamalix.fr
 # Doit répondre avec 37.59.115.242
 ```
 
 **Alternative (si ping bloqué):**
 
 ```bash
-nslookup pyxalix.devamalix.fr
+nslookup pyx.devamalix.fr
 # Doit afficher Address: 37.59.115.242
 ```
 
@@ -148,10 +148,10 @@ nslookup pyxalix.devamalix.fr
 
 - [x] Page catalog s'affiche avec UI Tailwind
 - [x] Container dm_web healthy
-- [x] Routing Traefik `dm.nexus.local` → Django OK
+- [x] Routing Traefik `pyx.nexus.local` → Django OK
 - [x] 3 produits chargés via seed data
 
-**URL testée :** `http://dm.nexus.local/catalog/` → Fonctionne
+**URL testée :** `http://pyx.nexus.local/catalog/` → Fonctionne
 
 **→ Configuration validée, prête pour VPS**
 
@@ -199,7 +199,7 @@ nano .env
 # Django
 DJANGO_SECRET_KEY=<GENERER-UNE-CLE-ALEATOIRE>
 DJANGO_DEBUG=0
-DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyxalix.devamalix.fr
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyx.devamalix.fr
 
 # Database
 DB_NAME=dm_db
@@ -299,7 +299,7 @@ Product.objects.create(
 
 ### 6.1 Vérifier certificat SSL
 
-**Ouvrir navigateur:** `https://pyxalix.devamalix.fr`
+**Ouvrir navigateur:** `https://pyx.devamalix.fr`
 
 **Vérifier:**
 - [ ] Redirection HTTP → HTTPS automatique
@@ -310,7 +310,7 @@ Product.objects.create(
 
 ### 6.2 Tester le parcours complet
 
-1. **Catalog:** `https://pyxalix.devamalix.fr/catalog/`
+1. **Catalog:** `https://pyx.devamalix.fr/catalog/`
    - [ ] Page s'affiche avec UI Tailwind
    - [ ] Grid responsive visible
    - [ ] Produits chargés
@@ -348,7 +348,7 @@ docker compose logs | grep pyxalix
 ```
 
 **Vérifier:**
-- [ ] Router `pyxalix-web` actif
+- [ ] Router `pyx-web` actif
 - [ ] Certificat généré automatiquement
 - [ ] Pas d'erreur 502/504
 
@@ -356,7 +356,7 @@ docker compose logs | grep pyxalix
 
 **Générer QR code:** https://www.qr-code-generator.com/
 
-- URL : `https://pyxalix.devamalix.fr/catalog/`
+- URL : `https://pyx.devamalix.fr/catalog/`
 - Scanner avec smartphone
 - [ ] Page s'affiche correctement
 - [ ] Responsive fonctionne
@@ -372,7 +372,7 @@ docker compose logs | grep pyxalix
 ```markdown
 ## Demo Live
 
-🔗 **https://pyxalix.devamalix.fr**
+🔗 **https://pyx.devamalix.fr**
 
 Version actuelle : v0.2.0 (UI moderne avec Tailwind CSS)
 ```
@@ -400,7 +400,7 @@ git push origin main
 ## Checklist finale
 
 ### Fonctionnel
-- [ ] `https://pyxalix.devamalix.fr` accessible
+- [ ] `https://pyx.devamalix.fr` accessible
 - [ ] Certificat SSL valide (HTTPS)
 - [ ] UI Tailwind affichée correctement
 - [ ] Parcours complet : catalog → product → purchase → thanks
@@ -409,7 +409,7 @@ git push origin main
 
 ### Technique
 - [ ] Tag GitHub v0.2.0 créé
-- [ ] DNS `pyxalix.devamalix.fr` → `37.59.115.242`
+- [ ] DNS `pyx.devamalix.fr` → `37.59.115.242`
 - [ ] Traefik route correctement vers dm_web
 - [ ] Containers healthy (web + postgres)
 - [ ] .env configuré et sécurisé (pas committé)
@@ -443,7 +443,7 @@ docker compose restart web
 **Solution:**
 ```bash
 # Dans .env
-DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyxalix.devamalix.fr
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyx.devamalix.fr
 docker compose restart web
 ```
 
@@ -454,7 +454,7 @@ docker compose restart web
 **Solution:**
 ```bash
 # Vérifier DNS
-nslookup pyxalix.devamalix.fr
+nslookup pyx.devamalix.fr
 
 # Vérifier Traefik
 cd ~/traefik

@@ -47,7 +47,7 @@
 - **Infra** : Images produits avec noms fixes (pas de hash Django)
 - **Infra** : CSRF_TRUSTED_ORIGINS configuré pour HTTPS production
 - **Infra** : Tests validés sur Nexus avec Traefik HTTP
-- **Infra** : Containers : `pyxalix_web`, `pyxalix_postgres`, `nexus_nginx_static`
+- **Infra** : Containers : `pyx_web`, `pyx_postgres`, `nexus_nginx_static`
 - **Docs** : DOCKER-COMPOSE-CONFIGS.md (guide complet)
 - **Docs** : INFRASTRUCTURE.md (architecture nginx-static)
 - **Docs** : /nexus/shared/README.md (services mutualisés)
@@ -59,6 +59,19 @@
 - **Refactor** : Nettoyage volumes Docker (media_data retiré)
 - **Refactor** : Suppression scripts obsolètes (7 fichiers bootstrap/audit Windows PS1)
 - ⏱️ Temps réel : **9 h** (UI 4h + Infra 5h)
+
+### v0.2.1 - Rebrand Pyxalix → Pyx
+- **Refactor** : Rebrand complet Pyxalix → Pyx (nom commercial)
+- **Config** : docker-compose.yml - domaine `pyx.devamalix.fr`, containers `pyx_web/pyx_postgres`, network `pyx-network`
+- **Config** : docker-compose.nexus.yml - domaine `pyx.nexus.local`, router `pyx-web-nexus`
+- **Config** : docker-compose.dev.yml - commentaires mis à jour
+- **Docs** : README.md - nomenclature explicite (commercial "Pyx" vs technique "DM")
+- **Docs** : 17 fichiers documentation - remplacements globaux (domaines, containers, networks)
+- **UI** : 5 templates HTML - "Pyxalix" → "Pyx" (tous affichages utilisateur)
+- **Docs** : s1_e5.md - documentation sprint rebrand
+- **Breaking** : Déploiement VPS nécessite DNS OVH (`pyx.devamalix.fr`), modification `.env` manuelle, redémarrage containers
+- **Note** : Repository GitHub reste `dm` (nom technique inchangé)
+- ⏱️ Temps réel : **1 h 30** (modifications + doc sprint)
 
 ### v0.3.0 (prévu)
 - Intégration Stripe Checkout (session test)
@@ -92,7 +105,7 @@
 ### v0.9.0
 - Déploiement sur VPS OVH (37.59.115.242)
 - Traefik + HTTPS Let's Encrypt
-- Domain : `pyxalix.devamalix.fr`
+- Domain : `pyx.devamalix.fr`
 - ⏱️ Estimation : **2–4 h** (infra déjà prête)
 
 ### v1.0.0

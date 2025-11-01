@@ -1,4 +1,4 @@
-# Configuration Docker Compose - Pyxalix (DM)
+# Configuration Docker Compose - Pyx (DM)
 
 **Date:** 28 octobre 2025
 **Version:** 1.0
@@ -7,7 +7,7 @@
 
 ## Vue d'ensemble
 
-Pyxalix utilise **3 fichiers docker-compose** pour gérer différents environnements :
+Pyx utilise **3 fichiers docker-compose** pour gérer différents environnements :
 
 ```
 dm/
@@ -63,7 +63,7 @@ dm/
   - Django : `8000:8000` (fallback accès direct)
   - PostgreSQL : `5432:5432` (optionnel, pour debug)
 - **Traefik :**
-  - **Django :** `dm.nexus.local` → port 8000
+  - **Django :** `pyx.nexus.local` → port 8000
   - EntryPoint : `web` (HTTP, pas HTTPS)
   - Router : `dm-web-nexus`
 - **DEBUG :** 1 (peut rester activé en test local)
@@ -74,14 +74,14 @@ dm/
 
 | Aspect | Nexus | VPS |
 |--------|-------|-----|
-| Domain | `dm.nexus.local` | `pyxalix.devamalix.fr` |
+| Domain | `pyx.nexus.local` | `pyx.devamalix.fr` |
 | EntryPoint | `web` (HTTP) | `websecure` (HTTPS) |
 | TLS | ❌ Non | ✅ Let's Encrypt |
 | Port 8000 exposé | ✅ Oui (fallback) | ❌ Non (sécurité) |
 | Port 5432 exposé | ✅ Oui (debug DB) | ❌ Non (sécurité) |
 | DEBUG | 1 | 0 |
-| Containers | dm_web | pyxalix_web |
-| Network | nexus-dm | pyxalix-network |
+| Containers | dm_web | pyx_web |
+| Network | nexus-dm | pyx-network |
 
 ### Quand l'utiliser
 
@@ -101,17 +101,17 @@ dm/
 ### Caractéristiques
 
 - **Network :**
-  - Interne : `pyxalix-network`
+  - Interne : `pyx-network`
   - Externe : `traefik-network`
 - **Ports exposés :** ❌ Non (Traefik only, sécurité)
 - **Traefik :**
-  - **Django :** `pyxalix.devamalix.fr` → port 8000
+  - **Django :** `pyx.devamalix.fr` → port 8000
   - EntryPoint : `websecure` (HTTPS:443)
   - TLS : `certresolver=letsencrypt` (auto-certificat)
-  - Router : `pyxalix-web`
+  - Router : `pyx-web`
   - Watchtower : auto-update activé
 - **DEBUG :** 0 (désactivé)
-- **Containers :** `pyxalix_web`, `pyxalix_postgres`
+- **Containers :** `pyx_web`, `pyx_postgres`
 - **Volumes :** `postgres_data`, `media_data`
 
 ### Quand l'utiliser
@@ -222,8 +222,8 @@ docker compose down
 | Fichier | Environnement | Domain | HTTPS | Ports exposés | DEBUG | Utilisation |
 |---------|---------------|--------|-------|---------------|-------|-------------|
 | **dev.yml** | PC local | localhost | ❌ | ✅ 8000, 5432 | 1 | Dev rapide |
-| **nexus.yml** | Nexus (test) | dm.nexus.local | ❌ | ✅ 8000, 5432 | 1 | Test pré-prod |
-| **yml** (défaut) | VPS (prod) | pyxalix.devamalix.fr | ✅ | ❌ Traefik | 0 | Production |
+| **nexus.yml** | Nexus (test) | pyx.nexus.local | ❌ | ✅ 8000, 5432 | 1 | Test pré-prod |
+| **yml** (défaut) | VPS (prod) | pyx.devamalix.fr | ✅ | ❌ Traefik | 0 | Production |
 
 ---
 
@@ -235,15 +235,15 @@ Modifications nécessaires dans les labels Traefik :
 
 ```yaml
 # AVANT (Nexus)
-- "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`)"
+- "traefik.http.routers.dm-web-nexus.rule=Host(`pyx.nexus.local`)"
 - "traefik.http.routers.dm-web-nexus.entrypoints=web"
 - "traefik.http.services.dm-web-nexus.loadbalancer.server.port=8000"
 
 # APRÈS (VPS)
-- "traefik.http.routers.pyxalix-web.rule=Host(`pyxalix.devamalix.fr`)"
-- "traefik.http.routers.pyxalix-web.entrypoints=websecure"
-- "traefik.http.routers.pyxalix-web.tls.certresolver=letsencrypt"
-- "traefik.http.services.pyxalix-web.loadbalancer.server.port=8000"
+- "traefik.http.routers.pyx-web.rule=Host(`pyx.devamalix.fr`)"
+- "traefik.http.routers.pyx-web.entrypoints=websecure"
+- "traefik.http.routers.pyx-web.tls.certresolver=letsencrypt"
+- "traefik.http.services.pyx-web.loadbalancer.server.port=8000"
 ```
 
 **Noms des containers :**
@@ -253,8 +253,8 @@ container_name: dm_web
 container_name: dm_postgres
 
 # VPS
-container_name: pyxalix_web
-container_name: pyxalix_postgres
+container_name: pyx_web
+container_name: pyx_postgres
 ```
 
 **✅ Avec les 3 fichiers, plus besoin de modifier manuellement !**
@@ -269,7 +269,7 @@ container_name: pyxalix_postgres
 # Django
 DJANGO_SECRET_KEY=dev-secret-key-change-in-prod
 DJANGO_DEBUG=1
-DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,192.168.1.22,nexus.local,dm.nexus.local
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,192.168.1.22,nexus.local,pyx.nexus.local
 
 # Database
 DB_NAME=dm_db
@@ -289,7 +289,7 @@ STRIPE_SECRET_KEY=sk_test_...
 # Django
 DJANGO_SECRET_KEY=<GENERER-UNE-CLE-FORTE-ALEATOIRE>
 DJANGO_DEBUG=0
-DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyxalix.devamalix.fr
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyx.devamalix.fr
 
 # Database
 DB_NAME=dm_db
@@ -343,8 +343,8 @@ docker compose logs | grep dm
 cat .env | grep ALLOWED_HOSTS
 
 # Ajouter le domain manquant
-# Pour Nexus: dm.nexus.local
-# Pour VPS: pyxalix.devamalix.fr
+# Pour Nexus: pyx.nexus.local
+# Pour VPS: pyx.devamalix.fr
 
 # Redémarrer
 docker compose restart web
@@ -354,7 +354,7 @@ docker compose restart web
 
 ```bash
 # Vérifier DNS
-nslookup pyxalix.devamalix.fr
+nslookup pyx.devamalix.fr
 # Doit répondre 37.59.115.242
 
 # Voir logs Traefik
@@ -385,9 +385,9 @@ docker compose exec web python manage.py migrate
 
 - [ ] .env configuré avec SECRET_KEY forte
 - [ ] DEBUG=0 dans .env VPS
-- [ ] ALLOWED_HOSTS contient pyxalix.devamalix.fr
+- [ ] ALLOWED_HOSTS contient pyx.devamalix.fr
 - [ ] DB_PASSWORD fort et unique
-- [ ] DNS pyxalix.devamalix.fr → 37.59.115.242 configuré
+- [ ] DNS pyx.devamalix.fr → 37.59.115.242 configuré
 - [ ] Traefik actif sur VPS
 - [ ] Testé sur Nexus avec docker-compose.nexus.yml
 - [ ] Pas de .env dans Git (.gitignore vérifié)

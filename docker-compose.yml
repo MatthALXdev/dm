@@ -1,7 +1,7 @@
 version: '3.8'
 
 # ===========================================
-# Pyxalix (DM) - Production avec Traefik
+# Pyx (DM) - Production avec Traefik
 # ===========================================
 # Environnement: VPS Production (37.59.115.242)
 # Usage: docker compose up -d
@@ -14,7 +14,7 @@ networks:
   # Network interne pour DB <-> Web
   dm-network:
     driver: bridge
-    name: pyxalix-network
+    name: pyx-network
 
   # Network Traefik externe (doit déjà exister sur VPS)
   traefik-network:
@@ -24,7 +24,7 @@ networks:
 services:
   db:
     image: postgres:16-alpine
-    container_name: pyxalix_postgres
+    container_name: pyx_postgres
     restart: unless-stopped
 
     environment:
@@ -51,7 +51,7 @@ services:
 
   web:
     build: .
-    container_name: pyxalix_web
+    container_name: pyx_web
     restart: unless-stopped
 
     volumes:
@@ -82,13 +82,13 @@ services:
       - "traefik.docker.network=traefik-network"
 
       # Router HTTPS
-      - "traefik.http.routers.pyxalix-web.rule=Host(`pyxalix.devamalix.fr`) && !PathPrefix(`/media/`)"
-      - "traefik.http.routers.pyxalix-web.priority=1"
-      - "traefik.http.routers.pyxalix-web.entrypoints=websecure"
-      - "traefik.http.routers.pyxalix-web.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pyx-web.rule=Host(`pyx.devamalix.fr`) && !PathPrefix(`/media/`)"
+      - "traefik.http.routers.pyx-web.priority=1"
+      - "traefik.http.routers.pyx-web.entrypoints=websecure"
+      - "traefik.http.routers.pyx-web.tls.certresolver=letsencrypt"
 
       # Service (port interne Django)
-      - "traefik.http.services.pyxalix-web.loadbalancer.server.port=8000"
+      - "traefik.http.services.pyx-web.loadbalancer.server.port=8000"
 
       # Watchtower auto-update (optionnel)
       - "com.centurylinklabs.watchtower.enable=true"

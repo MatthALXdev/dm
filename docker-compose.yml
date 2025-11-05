@@ -81,8 +81,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
 
-      # Router HTTPS
-      - "traefik.http.routers.pyx-web.rule=Host(`pyx.devamalix.fr`) && !PathPrefix(`/media/`)"
+      # Router HTTPS (exclut /media/ et /static/ servis par nginx-static)
+      - "traefik.http.routers.pyx-web.rule=Host(`pyx.devamalix.fr`) && !PathPrefix(`/media/`) && !PathPrefix(`/static/`)"
       - "traefik.http.routers.pyx-web.priority=1"
       - "traefik.http.routers.pyx-web.entrypoints=websecure"
       - "traefik.http.routers.pyx-web.tls.certresolver=letsencrypt"

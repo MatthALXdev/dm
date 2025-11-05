@@ -1,7 +1,10 @@
-# DM — Digital Wallpapers Boutique
+# Pyx — Digital Wallpapers Boutique
 
-> Projet e-commerce minimaliste pour la vente de packs de fonds d'écran numériques.  
+> Projet e-commerce minimaliste pour la vente de packs de fonds d'écran numériques.
 > Développé en Django 5, avec une approche **Walking Skeleton → MVP → Portfolio-ready**.
+>
+> **Nom commercial :** Pyx
+> **Nom technique :** DM (Digital Marketplace)
 
 ---
 

@@ -1,13 +1,13 @@
 version: '3.8'
 
 # ===========================================
-# Pyxalix (DM) - Configuration NEXUS (local)
+# Pyx (DM) - Configuration NEXUS (local)
 # ===========================================
 # Environnement: Serveur Nexus (192.168.1.22)
 # Usage: docker compose -f docker-compose.nexus.yml up -d
 #
 # Différences vs Production VPS:
-# - Domain: dm.nexus.local (au lieu de pyxalix.devamalix.fr)
+# - Domain: pyx.nexus.local (au lieu de pyx.devamalix.fr)
 # - EntryPoint: web (HTTP) au lieu de websecure (HTTPS)
 # - Pas de certificat Let's Encrypt
 # - Architecture identique pour tester avant déploiement prod
@@ -78,20 +78,20 @@ services:
       - dm-network
       - traefik-network
 
-    # Labels Traefik pour routage via dm.nexus.local
+    # Labels Traefik pour routage via pyx.nexus.local
     labels:
       # Activation Traefik
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
 
       # Router HTTP (pas HTTPS en local)
-      # IMPORTANT: On exclut /media/ qui est servi par nginx-static
-      - "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`) && !PathPrefix(`/media/`)"
-      - "traefik.http.routers.dm-web-nexus.entrypoints=web"
-      - "traefik.http.routers.dm-web-nexus.priority=1"
+      # IMPORTANT: On exclut /media/ et /static/ servis par nginx-static
+      - "traefik.http.routers.pyx-web-nexus.rule=Host(`pyx.nexus.local`) && !PathPrefix(`/media/`) && !PathPrefix(`/static/`)"
+      - "traefik.http.routers.pyx-web-nexus.entrypoints=web"
+      - "traefik.http.routers.pyx-web-nexus.priority=1"
 
       # Service (port interne Django)
-      - "traefik.http.services.dm-web-nexus.loadbalancer.server.port=8000"
+      - "traefik.http.services.pyx-web-nexus.loadbalancer.server.port=8000"
 
 volumes:
   postgres_data:

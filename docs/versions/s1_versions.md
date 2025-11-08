@@ -73,43 +73,181 @@
 - **Note** : Repository GitHub reste `dm` (nom technique inchangé)
 - ⏱️ Temps réel : **1 h 30** (modifications + doc sprint)
 
-### v0.3.0 (prévu)
-- Intégration Stripe Checkout (session test)
-- Modèle `Order` minimal
-- Bouton paiement fonctionnel
-- ⏱️ Estimation : **4–6 h**
+## 🎯 Versions restantes Sprint 1 (révisées)
 
-### v0.4.0 (prévu)
-- Webhook Stripe implémenté
-- Création d'un `Order` en DB après paiement
-- Page `/thanks` avec retour utilisateur
-- ⏱️ Estimation : **4–8 h**
 
-### v0.5.0
-- Intégration Backblaze B2
-- Génération d’URL presignées réelles
-- ⏱️ Estimation : **4–8 h**
+### v0.3.0 ⏳ EN ATTENTE - Intégration Stripe Checkout
+**Objectif** : Remplacer mock payment par paiement Stripe test mode
 
-### v0.6.0
-- Email transactionnel envoyé (Postmark/SES sandbox)
-- ⏱️ Estimation : **2–4 h**
+**Features :**
+- Installation SDK Stripe Python
+- Configuration clés API Stripe (test mode)
+- Modèle `Order` basique (product, stripe_session_id, amount, status, timestamps)
+- Vue création Stripe Checkout Session
+- Redirection vers Stripe hosted page
+- Gestion URLs success/cancel
+- Bouton "Acheter maintenant" appelle endpoint checkout
+- Page `/thanks` affiche confirmation avec session_id
 
-### v0.7.0
-- UI MVP responsive (mobile-friendly)
-- ⏱️ Estimation : **8–16 h**
+**Config :**
+- Variables environnement Stripe (public/secret/webhook keys)
 
-### v0.8.0
-- Sécurité prod minimale activée (HSTS, CSP, headers sécurisés)
-- ⏱️ Estimation : **3–6 h**
+**Docs :**
+- Guide configuration Stripe
+- README section "Paiement" mise à jour
 
-### v0.9.0
-- Déploiement sur VPS OVH (37.59.115.242)
-- Traefik + HTTPS Let's Encrypt
-- Domain : `pyx.devamalix.fr`
-- ⏱️ Estimation : **2–4 h** (infra déjà prête)
+⏱️ **Estimation : 4–6 h**
 
-### v1.0.0
-- Tests unitaires + E2E (end-to-end)
-- Monitoring `/health` activé
-- Walking Skeleton complet livré
-- ⏱️ Estimation : **8–16 h**
+---
+
+### v0.4.0 ⏳ PLANIFIÉ - Webhook Stripe + Création Order
+**Objectif** : Automatiser création Order après paiement validé
+
+**Features :**
+- Endpoint webhook Stripe (POST)
+- Vérification signature Stripe
+- Gestion event `checkout.session.completed`
+- Création Order en DB avec status='paid'
+- Logging succès/échec
+- Sécurisation endpoint (CSRF exempt, validation signature, rate limiting)
+- Configuration webhook Stripe Dashboard
+- Amélioration page `/thanks` avec détails Order
+- Gestion cas session invalide
+
+**Docs :**
+- Guide webhook Stripe
+- Section troubleshooting Stripe
+
+⏱️ **Estimation : 4–8 h**
+
+---
+
+### v0.5.0 ⏳ PLANIFIÉ - Tests Unitaires
+**Objectif** : Couvrir models, views et intégration Stripe
+
+**Tests à créer :**
+- Tests Models (Product creation, str, slug unique, Order creation, status default)
+- Tests Views (catalog 200, display products, product detail valid/invalid slug, purchase redirect)
+- Tests Stripe (checkout session creation, webhook signature valid/invalid, order creation après event)
+- Tests Migrations (vérification chargement 3 produits initiaux)
+
+**Configuration :**
+- pytest.ini et conftest.py
+- Coverage minimum : 70%
+- Commande pytest avec coverage HTML
+
+**Docs :**
+- Guide tests complet
+- README section "Tests" avec badge coverage
+
+⏱️ **Estimation : 6–8 h**
+
+---
+
+### v0.6.0 ⏳ PLANIFIÉ - CI/CD GitHub Actions
+**Objectif** : Automatiser tests sur chaque push
+
+**Workflow :**
+- Trigger sur push (main, develop branches) et pull requests
+- Service PostgreSQL pour tests
+- Setup Python 3.11 avec cache pip
+- Installation dépendances
+- Migrations de test
+- Exécution tests avec coverage
+- Upload coverage vers Codecov
+
+**GitHub Secrets :**
+- Clés Stripe test mode
+
+**Badges README :**
+- Badge CI Tests
+- Badge Coverage
+
+**Docs :**
+- Guide CI/CD
+- README section "CI/CD"
+
+⏱️ **Estimation : 2–3 h**
+
+---
+
+### v1.0.0 🎯 OBJECTIF SPRINT 1 - Walking Skeleton Complet
+**Objectif** : Projet e-commerce CORE fonctionnel avec paiement + tests + CI/CD
+
+**Récapitulatif features :**
+- Catalog + Product pages responsive
+- Infrastructure Docker + nginx-static + Traefik
+- Déploiement VPS HTTPS
+- Paiement Stripe Checkout fonctionnel
+- Webhook Stripe + création Order automatique
+- Tests unitaires (coverage > 70%)
+- CI/CD GitHub Actions
+- Documentation complète
+
+**Tests finaux production :**
+- Achat produit sur pyx.devamalix.fr
+- Vérification Order en DB
+- Vérification webhook logs
+- Badge CI vert sur GitHub
+- Coverage report accessible
+
+**Livrables finaux :**
+- README avec badges (CI + Coverage)
+- Screenshot parcours utilisateur
+- Documentation technique complète
+- Repo prêt pour démonstration alternance
+
+**Démo entretien :**
+> "E-commerce avec paiement Stripe intégré, déployé en production VPS HTTPS, tests automatisés (coverage 70%+) et CI/CD GitHub Actions."
+
+⏱️ **Estimation finale : 2–4 h** (validation + docs finales)
+
+---
+
+## 📊 Récapitulatif Sprint 1
+
+### Temps total Sprint 1
+
+| Phase | Versions | Temps réel | Status |
+|-------|----------|------------|--------|
+| **Foundation** | v0.0.1 → v0.1.2 | 10h | ✅ Accompli |
+| **UI + Infra** | v0.2.0 → v0.2.2 | 12.5h | ✅ Accompli |
+| **Stripe** | v0.3.0 → v0.4.0 | 8-14h | ⏳ Reste à faire |
+| **Tests + CI/CD** | v0.5.0 → v0.6.0 | 8-11h | ⏳ Reste à faire |
+| **Finalisation** | v1.0.0 | 2-4h | ⏳ Reste à faire |
+
+**Total Sprint 1 :** 40.5-51.5h (22.5h fait + 18-29h reste)
+
+**Temps restant estimé :** 18-29h (2.5-4 jours de travail)
+
+---
+
+## 🎯 Prochaines étapes immédiates
+
+1. **v0.3.0** - Intégration Stripe Checkout (4-6h)
+2. **v0.4.0** - Webhook + Order (4-8h)
+3. **v0.5.0** - Tests unitaires (6-8h)
+4. **v0.6.0** - CI/CD (2-3h)
+5. **v1.0.0** - Validation finale (2-4h)
+
+**Deadline recommandée Sprint 1 :** Dans 3-4 jours
+
+---
+
+## 📝 Notes importantes
+
+### Changements vs version originale
+- ✅ v0.7.0 (UI responsive) : **Fusionnée dans v0.2.0** (déjà fait)
+- ✅ v0.9.0 (Déploiement VPS) : **Renommée v0.2.2** (déjà fait)
+- ❌ v0.8.0 (Sécurité prod) : **Reportée Sprint 2** (HSTS, CSP pas critiques pour alternance)
+- ❌ Backblaze B2 : **Reporté Sprint 2** (pas critique pour démo)
+- ❌ Email transactionnel : **Reporté Sprint 2** (pas critique pour démo)
+
+### Justification
+Focus sur **paiement réel + tests + CI/CD**.
+Téléchargement et email peuvent être ajoutés après (Sprint 2).
+---
+
+**Dernière mise à jour :** 08 novembre 2025  
+**Status :** Sprint 1 à 40% (v0.0.1 → v0.2.2 accompli)  
+**Prochaine version :** v0.3.0 - Stripe Checkout

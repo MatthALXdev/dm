@@ -85,13 +85,21 @@ services:
       - "traefik.docker.network=traefik-network"
 
       # Router HTTP (pas HTTPS en local)
-      # IMPORTANT: On exclut /media/ et /static/ servis par nginx-static
-      - "traefik.http.routers.pyx-web-nexus.rule=Host(`pyx.nexus.local`) && !PathPrefix(`/media/`) && !PathPrefix(`/static/`)"
+      # IMPORTANT: On exclut /media/ servis par nginx-static
+      # Priority 10 pour avoir la priorité sur le portfolio (priority 1)
+      - "traefik.http.routers.pyx-web-nexus.rule=Host(`pyx.nexus.local`) && !PathPrefix(`/media/`)"
       - "traefik.http.routers.pyx-web-nexus.entrypoints=web"
-      - "traefik.http.routers.pyx-web-nexus.priority=1"
+      - "traefik.http.routers.pyx-web-nexus.priority=10"
 
       # Service (port interne Django)
       - "traefik.http.services.pyx-web-nexus.loadbalancer.server.port=8000"
+
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   postgres_data:

@@ -39,6 +39,10 @@ def checkout(request, slug):
         product = get_object_or_404(Product, slug=slug)
 
         try:
+            # Construire l'URL de base dynamiquement (dev/prod)
+            base_url = f"{request.scheme}://{request.get_host()}"
+            success_url = f'{base_url}/thanks/?session_id={{CHECKOUT_SESSION_ID}}'
+
             # Créer Stripe Checkout Session
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
@@ -54,8 +58,8 @@ def checkout(request, slug):
                     'quantity': 1,
                 }],
                 mode='payment',
-                success_url=request.build_absolute_uri(f'/thanks/?session_id={{CHECKOUT_SESSION_ID}}'),
-                cancel_url=request.build_absolute_uri(f'/product/{product.slug}/'),
+                success_url=success_url,
+                cancel_url=f'{base_url}/product/{product.slug}/',
             )
 
             # Rediriger vers Stripe hosted checkout page

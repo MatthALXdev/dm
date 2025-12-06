@@ -23,7 +23,7 @@
             </div>
 
             <!-- Bouton Acheter -->
-            <form method="POST" action="{% url 'purchase' product.slug %}" class="mt-8">
+            <form method="POST" action="{% url 'checkout' product.slug %}" class="mt-8">
                 {% csrf_token %}
                 <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-sm hover:shadow-md">
                     Acheter maintenant

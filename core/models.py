@@ -1,4 +1,5 @@
 from django.db import models
+import secrets
 
 
 class Product(models.Model):
@@ -26,8 +27,11 @@ class Order(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='orders')
     stripe_session_id = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(default='')
     amount = models.DecimalField(max_digits=8, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    download_token = models.CharField(max_length=64, unique=True, db_index=True, default='')
+    download_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -36,3 +40,8 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.product.name} - {self.status}"
+
+    def save(self, *args, **kwargs):
+        if not self.download_token:
+            self.download_token = secrets.token_urlsafe(48)
+        super().save(*args, **kwargs)

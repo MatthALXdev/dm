@@ -42,14 +42,28 @@
             </div>
         </div>
 
-        <div class="text-left bg-blue-50 p-4 rounded-lg">
-            <p class="text-sm text-gray-700 mb-2">
-                <strong>Prochaines étapes :</strong>
+        {% if order %}
+        <div class="text-left bg-green-50 p-4 rounded-lg border border-green-200">
+            <p class="text-sm text-gray-700 mb-3">
+                <strong>✓ Votre commande est confirmée !</strong>
             </p>
-            <p class="text-sm text-gray-600">
-                Vous recevrez un email à l'adresse fournie avec le lien de téléchargement de votre fond d'écran dans les prochaines minutes.
+            <a href="{% url 'download' order.download_token %}" class="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-center">
+                📥 Télécharger votre fond d'écran
+            </a>
+            <p class="text-xs text-gray-500 mt-2">
+                Conservez ce lien de téléchargement. Il reste valide indéfiniment.
             </p>
         </div>
+        {% else %}
+        <div class="text-left bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <p class="text-sm text-gray-700 mb-2">
+                <strong>⚠️ Erreur de configuration</strong>
+            </p>
+            <p class="text-sm text-gray-600">
+                Votre paiement a été effectué mais nous n'avons pas pu créer votre commande. Contactez le support avec votre Session ID.
+            </p>
+        </div>
+        {% endif %}
     </div>
 
     <a href="{% url 'catalog' %}" class="inline-block mt-8 text-indigo-600 hover:text-indigo-700 font-medium transition-colors">

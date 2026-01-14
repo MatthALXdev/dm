@@ -8,6 +8,7 @@ click==8.3.0
 colorama==0.4.6
 Django==5.2.6
 flake8==7.3.0
+gunicorn==23.0.0
 idna==3.10
 iniconfig==2.1.0
 jmespath==1.0.1

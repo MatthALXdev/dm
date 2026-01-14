@@ -37,5 +37,5 @@ echo "🔄 Running migrations..."
 python manage.py migrate --noinput
 
 echo "✓ Initialization complete!"
-echo "🚀 Starting Django server..."
-exec python manage.py runserver 0.0.0.0:8000
+echo "🚀 Starting Gunicorn server (3 workers, production-ready)..."
+exec gunicorn backend.wsgi:application --config gunicorn.conf.py

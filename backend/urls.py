@@ -25,7 +25,7 @@ urlpatterns = [
 ]
 
 # Serve static and media files in development only
-# In production (Nexus/VPS), nginx-static handles media files
+# In production (VPS), nginx-static handles media files
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

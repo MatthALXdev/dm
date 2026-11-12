@@ -5,25 +5,25 @@ Ce dossier contient les screenshots de l'interface Pyx pour le README.
 ## 📸 Screenshots à capturer
 
 ### 1. screenshot-catalog.png
-**Page :** http://pyx.nexus.local/catalog/
+**Page :** http://localhost:8000/catalog/
 - **Résolution :** 1920x1080 ou 1440x900
 - **Contenu :** Grid de produits (3 produits visibles)
 - **Points clés :** Header avec logo Pyx, cards produits avec images, prix, boutons
 
 ### 2. screenshot-product.png
-**Page :** http://pyx.nexus.local/product/pack-minimal/ (ou autre slug)
+**Page :** http://localhost:8000/product/pack-minimal/ (ou autre slug)
 - **Résolution :** 1920x1080 ou 1440x900
 - **Contenu :** Page détail produit
 - **Points clés :** Image grande, description, prix, bouton "Acheter maintenant"
 
 ### 3. screenshot-thanks.png
-**Page :** http://pyx.nexus.local/thanks/?session_id=... (après achat test)
+**Page :** http://localhost:8000/thanks/?session_id=... (après achat test)
 - **Résolution :** 1920x1080 ou 1440x900
 - **Contenu :** Confirmation paiement
 - **Points clés :** Message succès, montant, email, bouton "Télécharger"
 
 ### 4. screenshot-download.png
-**Page :** http://pyx.nexus.local/download/<token>/ (depuis page thanks)
+**Page :** http://localhost:8000/download/<token>/ (depuis page thanks)
 - **Résolution :** 1920x1080 ou 1440x900
 - **Contenu :** Page téléchargement sécurisée
 - **Points clés :** Infos commande, compteur téléchargements, lien fichier
@@ -93,8 +93,8 @@ Ces noms sont référencés dans le README.md.
 
 ## 🚀 Workflow
 
-1. Lancer l'application : `docker compose -f docker-compose.nexus.yml up -d`
-2. Ouvrir navigateur : http://pyx.nexus.local/catalog/
+1. Lancer l'application : `docker compose -f docker-compose.dev.yml up -d`
+2. Ouvrir navigateur : http://localhost:8000/catalog/
 3. Capturer 4 screenshots selon liste ci-dessus
 4. Optimiser avec TinyPNG ou CLI
 5. Placer dans ce dossier `docs/images/`

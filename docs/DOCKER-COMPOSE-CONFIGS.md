@@ -1,22 +1,19 @@
 # Configuration Docker Compose - Pyx (DM)
 
 **Date:** 28 octobre 2025
-**Version:** 1.0
+**Version:** 1.1 (mise à jour le 12 novembre 2026 : retrait de la configuration Nexus)
 
 ---
 
 ## Vue d'ensemble
 
-Pyx utilise **3 fichiers docker-compose** pour gérer différents environnements :
+Pyx utilise **2 fichiers docker-compose** pour gérer les environnements :
 
 ```
 dm/
 ├── docker-compose.dev.yml     (Dev PC, pas de Traefik)
-├── docker-compose.nexus.yml   (Test Nexus, Traefik HTTP)
 └── docker-compose.yml         (Prod VPS, Traefik HTTPS)
 ```
-
-**🎯 Objectif :** Architecture cohérente avec ReContent, tests pré-prod avant déploiement VPS.
 
 ---
 
@@ -46,54 +43,7 @@ dm/
 
 ---
 
-## 2. docker-compose.nexus.yml
-
-**Usage :** Test local avec Traefik HTTP
-**Commande :** `docker compose -f docker-compose.nexus.yml up -d`
-
-**📅 Créé le :** 28 octobre 2025
-**🎯 Objectif :** Reproduire l'architecture VPS en local pour tests pré-production
-
-### Caractéristiques
-
-- **Network :**
-  - Interne : `nexus-dm`
-  - Externe : `traefik-network` (partagé avec ReContent, etc.)
-- **Ports exposés :**
-  - Django : `8000:8000` (fallback accès direct)
-  - PostgreSQL : `5432:5432` (optionnel, pour debug)
-- **Traefik :**
-  - **Django :** `pyx.nexus.local` → port 8000
-  - EntryPoint : `web` (HTTP, pas HTTPS)
-  - Router : `dm-web-nexus`
-- **DEBUG :** 1 (peut rester activé en test local)
-- **Containers :** `dm_web`, `dm_postgres`
-- **Volumes :** `postgres_data`, `media_data`
-
-### Différences vs VPS
-
-| Aspect | Nexus | VPS |
-|--------|-------|-----|
-| Domain | `pyx.nexus.local` | `pyx.devamalix.fr` |
-| EntryPoint | `web` (HTTP) | `websecure` (HTTPS) |
-| TLS | ❌ Non | ✅ Let's Encrypt |
-| Port 8000 exposé | ✅ Oui (fallback) | ❌ Non (sécurité) |
-| Port 5432 exposé | ✅ Oui (debug DB) | ❌ Non (sécurité) |
-| DEBUG | 1 | 0 |
-| Containers | dm_web | pyx_web |
-| Network | nexus-dm | pyx-network |
-
-### Quand l'utiliser
-
-- ✅ Tester config Traefik avant déploiement VPS
-- ✅ Valider routing Django via Traefik
-- ✅ Tester architecture identique à prod (sans HTTPS)
-- ✅ Vérifier healthcheck PostgreSQL
-- ❌ Pas pour dev rapide (utiliser docker-compose.dev.yml)
-
----
-
-## 3. docker-compose.yml
+## 2. docker-compose.yml
 
 **Usage :** Production VPS
 **Commande :** `docker compose up -d` (fichier par défaut)
@@ -116,9 +66,8 @@ dm/
 
 ### Quand l'utiliser
 
-- Production sur VPS (37.59.115.242)
+- Production sur VPS
 - Déploiement final avec HTTPS
-- Environnement clients réels
 - Mode sécurisé (pas de ports exposés)
 
 ---
@@ -126,18 +75,16 @@ dm/
 ## Workflow de déploiement
 
 ```
-PC dev (develop-extern)
+PC dev
     ↓
   docker-compose.dev.yml
-    ↓ (git push)
-Nexus (develop-home)
-    ↓
-  docker-compose.nexus.yml  ← Test pré-prod
-    ↓ (git merge → main)
+    ↓ (branche, PR, merge)
 VPS (main)
     ↓
   docker-compose.yml  ← Production
 ```
+
+La production suit `main` : aucune modification directe dans `~/dm`.
 
 ---
 
@@ -162,31 +109,6 @@ docker compose -f docker-compose.dev.yml exec web python manage.py createsuperus
 docker compose -f docker-compose.dev.yml down
 ```
 
-### Nexus (test)
-
-```bash
-# SSH vers Nexus
-ssh matth@nexus.local
-
-# Aller dans le projet
-cd /home/matth/nexus/dev-web/dm
-
-# Pull dernières modifs
-git pull origin develop-home
-
-# Démarrer avec config Nexus
-docker compose -f docker-compose.nexus.yml up -d --build
-
-# Voir logs
-docker compose -f docker-compose.nexus.yml logs -f web
-
-# Migrations
-docker compose -f docker-compose.nexus.yml exec web python manage.py migrate
-
-# Arrêter
-docker compose -f docker-compose.nexus.yml down
-```
-
 ### VPS (prod)
 
 ```bash
@@ -196,8 +118,8 @@ ssh ubuntu@37.59.115.242
 # Aller dans le projet
 cd ~/dm
 
-# Pull dernières modifs
-git pull origin main
+# Mettre à jour (après fusion de la PR sur main)
+git pull --ff-only
 
 # Démarrer (utilise docker-compose.yml par défaut)
 docker compose up -d --build
@@ -222,54 +144,19 @@ docker compose down
 | Fichier | Environnement | Domain | HTTPS | Ports exposés | DEBUG | Utilisation |
 |---------|---------------|--------|-------|---------------|-------|-------------|
 | **dev.yml** | PC local | localhost | ❌ | ✅ 8000, 5432 | 1 | Dev rapide |
-| **nexus.yml** | Nexus (test) | pyx.nexus.local | ❌ | ✅ 8000, 5432 | 1 | Test pré-prod |
 | **yml** (défaut) | VPS (prod) | pyx.devamalix.fr | ✅ | ❌ Traefik | 0 | Production |
-
----
-
-## Migration d'une config à l'autre
-
-### Nexus → VPS
-
-Modifications nécessaires dans les labels Traefik :
-
-```yaml
-# AVANT (Nexus)
-- "traefik.http.routers.dm-web-nexus.rule=Host(`pyx.nexus.local`)"
-- "traefik.http.routers.dm-web-nexus.entrypoints=web"
-- "traefik.http.services.dm-web-nexus.loadbalancer.server.port=8000"
-
-# APRÈS (VPS)
-- "traefik.http.routers.pyx-web.rule=Host(`pyx.devamalix.fr`)"
-- "traefik.http.routers.pyx-web.entrypoints=websecure"
-- "traefik.http.routers.pyx-web.tls.certresolver=letsencrypt"
-- "traefik.http.services.pyx-web.loadbalancer.server.port=8000"
-```
-
-**Noms des containers :**
-```yaml
-# Nexus
-container_name: dm_web
-container_name: dm_postgres
-
-# VPS
-container_name: pyx_web
-container_name: pyx_postgres
-```
-
-**✅ Avec les 3 fichiers, plus besoin de modifier manuellement !**
 
 ---
 
 ## Variables d'environnement (.env)
 
-### Exemple .env pour dev/nexus
+### Exemple .env pour dev
 
 ```env
 # Django
 DJANGO_SECRET_KEY=dev-secret-key-change-in-prod
 DJANGO_DEBUG=1
-DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,192.168.1.22,nexus.local,pyx.nexus.local
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
 
 # Database
 DB_NAME=dm_db
@@ -319,21 +206,17 @@ sudo lsof -i :8000
 docker compose -f docker-compose.dev.yml down
 ```
 
-### Traefik ne détecte pas Django (nexus.yml)
+### Traefik ne détecte pas Django (VPS)
 
 ```bash
 # Vérifier que traefik-network existe
 docker network ls | grep traefik
 
-# Créer si manquant
-docker network create traefik-network
-
 # Vérifier labels
-docker inspect dm_web | grep traefik
+docker inspect pyx_web | grep traefik
 
 # Voir logs Traefik
-cd /home/matth/nexus/shared/traefik
-docker compose logs | grep dm
+docker logs traefik 2>&1 | grep pyx
 ```
 
 ### Erreur 400 Bad Request (DisallowedHost)
@@ -342,9 +225,7 @@ docker compose logs | grep dm
 # Vérifier ALLOWED_HOSTS dans .env
 cat .env | grep ALLOWED_HOSTS
 
-# Ajouter le domain manquant
-# Pour Nexus: pyx.nexus.local
-# Pour VPS: pyx.devamalix.fr
+# Ajouter le domain manquant (VPS : pyx.devamalix.fr)
 
 # Redémarrer
 docker compose restart web
@@ -355,11 +236,10 @@ docker compose restart web
 ```bash
 # Vérifier DNS
 nslookup pyx.devamalix.fr
-# Doit répondre 37.59.115.242
+# Doit répondre à l'IP du VPS
 
 # Voir logs Traefik
-cd ~/traefik
-docker compose logs | grep letsencrypt
+docker logs traefik 2>&1 | grep -i acme
 
 # Attendre 1-2 minutes pour génération auto
 ```
@@ -374,9 +254,9 @@ docker compose exec web python manage.py showmigrations
 docker compose exec web python manage.py migrate
 
 # Si problème: reset DB (DEV UNIQUEMENT)
-docker compose down -v
-docker compose up -d
-docker compose exec web python manage.py migrate
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml exec web python manage.py migrate
 ```
 
 ---
@@ -387,13 +267,13 @@ docker compose exec web python manage.py migrate
 - [ ] DEBUG=0 dans .env VPS
 - [ ] ALLOWED_HOSTS contient pyx.devamalix.fr
 - [ ] DB_PASSWORD fort et unique
-- [ ] DNS pyx.devamalix.fr → 37.59.115.242 configuré
+- [ ] DNS pyx.devamalix.fr → IP du VPS configuré
 - [ ] Traefik actif sur VPS
-- [ ] Testé sur Nexus avec docker-compose.nexus.yml
+- [ ] Testé en local avec docker-compose.dev.yml
 - [ ] Pas de .env dans Git (.gitignore vérifié)
 
 ---
 
 **Auteur :** MatthALXdev
-**Dernière mise à jour :** 28 octobre 2025
+**Dernière mise à jour :** 12 novembre 2026
 **Version Pyxalix :** v0.2.0

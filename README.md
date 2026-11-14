@@ -21,7 +21,7 @@
 - 🔐 **Téléchargements sécurisés** - Tokens uniques générés par commande (64 caractères)
 - 📊 **Admin Django** - Gestion produits et commandes via back-office
 - 🐳 **Dockerisé** - PostgreSQL 16 + Django 5 avec hot-reload
-- 🌐 **Multi-environnements** - Configurations dev/nexus/prod avec Traefik
+- 🌐 **Multi-environnements** - Configurations dev/prod avec Traefik
 - 📝 **Logging complet** - Suivi événements webhook et téléchargements
 - 🧪 **Tests intégrés** - Suite pytest pour intégration Stripe
 
@@ -249,12 +249,6 @@ Voir [CHANGELOG.md](CHANGELOG.md) pour l'historique complet.
 ```bash
 docker compose -f docker-compose.dev.yml up -d
 # http://localhost:8000
-```
-
-### Nexus (Test interne)
-```bash
-docker compose -f docker-compose.nexus.yml up -d
-# http://pyx.nexus.local (Traefik routing)
 ```
 
 ### Production VPS

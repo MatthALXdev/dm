@@ -6,19 +6,18 @@ Documentation de l'architecture et de l'infrastructure du projet DM.
 
 ### Environnements
 
-Le projet DM dispose de **3 environnements** avec **3 fichiers docker-compose** :
+Le projet DM dispose de **2 environnements** avec **2 fichiers docker-compose** :
 
 | Environnement | Fichier | Usage | DEBUG | Media Files |
 |--------------|---------|-------|-------|-------------|
 | **PC Dev** | `docker-compose.dev.yml` | Développement local rapide | ✅ | Django serve |
-| **Nexus** | `docker-compose.nexus.yml` | Test pré-production | ❌ | nginx-static |
 | **VPS** | `docker-compose.yml` | Production | ❌ | nginx-static |
 
 ### Stack Technique
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Production (VPS) / Nexus (test)                         │
+│ Production (VPS)                                        │
 │                                                          │
 │  Internet → Traefik (reverse proxy + HTTPS)            │
 │              ↓                                           │
@@ -47,7 +46,7 @@ Le projet DM dispose de **3 environnements** avec **3 fichiers docker-compose** 
 **Variables d'environnement** (`.env`) :
 ```bash
 DJANGO_SECRET_KEY=<généré>
-DJANGO_DEBUG=0  # 1 en dev, 0 en nexus/prod
+DJANGO_DEBUG=0  # 1 en dev, 0 en prod
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,pyxalix.devamalix.fr
 DJANGO_CSRF_TRUSTED_ORIGINS=https://pyxalix.devamalix.fr
 
@@ -78,7 +77,7 @@ docker compose exec web python manage.py showmigrations
 
 **Configuration** :
 - Image : `postgres:16-alpine`
-- Port : `5432` (exposé uniquement sur Nexus pour debug)
+- Port : `5432` (non exposé en production)
 - Volume : `postgres_data` (persistant)
 
 **Healthcheck** : Vérifie que PostgreSQL est prêt avant de démarrer Django
@@ -99,7 +98,7 @@ docker compose exec -T db psql -U dm_user dm_db < backup.sql
 ### Stratégie
 
 - **DEBUG=1 (dev)** : Django sert les media files via `urls.py`
-- **DEBUG=0 (nexus/prod)** : nginx-static sert les media files
+- **DEBUG=0 (prod)** : nginx-static sert les media files
 
 ### Media Files
 
@@ -114,9 +113,9 @@ docker compose exec -T db psql -U dm_user dm_db < backup.sql
 
 ### Configuration nginx
 
-Les media files sont servis par `~/nexus/shared/nginx-static/` (mutualisé entre projets).
+Les media files sont servis par `nginx-static` (dépôt devamalix-infra, mutualisé entre projets).
 
-Voir `~/nexus/shared/nginx-static/README.md` pour la configuration.
+Voir `nginx-static/README.md` de ce dépôt pour la configuration.
 
 ---
 
@@ -146,17 +145,6 @@ Voir `~/nexus/shared/nginx-static/README.md` pour la configuration.
 
 ## Routing Traefik
 
-### Nexus (HTTP)
-
-```yaml
-labels:
-  - "traefik.http.routers.dm-web-nexus.rule=Host(`dm.nexus.local`) && !PathPrefix(`/media/`)"
-  - "traefik.http.routers.dm-web-nexus.entrypoints=web"
-  - "traefik.http.routers.dm-web-nexus.priority=1"
-```
-
-**Exclusion `/media/`** : Les media files sont routés vers nginx-static (priorité 100)
-
 ### VPS (HTTPS)
 
 ```yaml
@@ -167,6 +155,8 @@ labels:
 ```
 
 **Let's Encrypt** : Certificat SSL généré automatiquement par Traefik
+
+**Exclusion `/media/`** : Les media files sont routés vers nginx-static (priorité 100)
 
 ---
 
@@ -179,21 +169,7 @@ docker compose -f docker-compose.dev.yml up -d
 # Accès : http://localhost:8000
 ```
 
-### 2. Sur Nexus (test)
-
-```bash
-# Démarrer l'infra (Traefik + nginx-static)
-cd ~/nexus/shared/traefik && docker compose up -d
-cd ~/nexus/shared/nginx-static && docker compose up -d
-
-# Démarrer DM
-cd ~/nexus/dev-web/dm
-docker compose -f docker-compose.nexus.yml up -d
-
-# Accès : http://dm.nexus.local (via Traefik)
-```
-
-### 3. Sur VPS (production)
+### 2. Sur VPS (production)
 
 ```bash
 # Démarrer l'infra
@@ -270,9 +246,9 @@ docker compose up -d
 **Symptôme** : 404 sur `/media/products/*.png`
 
 **Solutions** :
-1. Vérifier que nginx-static tourne : `docker ps | grep nginx_static`
-2. Vérifier que les images existent : `ls -la ~/nexus/dev-web/dm/media/products/`
-3. Vérifier que Traefik route vers nginx : `curl -I http://dm.nexus.local/media/products/forest_path.png` → doit retourner `Server: nginx`
+1. Vérifier que nginx-static tourne : `docker ps | grep nginx-static`
+2. Vérifier que les images existent : `ls -la ~/dm/media/products/`
+3. Vérifier que Traefik route vers nginx : `curl -I https://pyx.devamalix.fr/media/products/forest_path.png` → doit retourner `Server: nginx`
 
 ### CSRF errors en production
 
@@ -324,7 +300,7 @@ docker compose logs web
 
 ## Références
 
-- [DOCKER-COMPOSE-CONFIGS.md](./DOCKER-COMPOSE-CONFIGS.md) - Guide des 3 fichiers docker-compose
+- [DOCKER-COMPOSE-CONFIGS.md](./DOCKER-COMPOSE-CONFIGS.md) - Guide des 2 fichiers docker-compose
 - [WORKFLOW-GIT-BRANCHES.md](../.claude/WORKFLOW-GIT-BRANCHES.md) - Workflow Git
 - [README.md](../README.md) - Documentation générale du projet
-- Infrastructure mutualisée : `~/nexus/shared/README.md`
+- Infrastructure mutualisée : dépôt `devamalix-infra` (README)

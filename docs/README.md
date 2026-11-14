@@ -11,7 +11,7 @@ Documentation technique du projet **Pyx** (Digital Marketplace).
 
 ### Guides techniques
 - **[`STRIPE_SETUP.md`](STRIPE_SETUP.md)** - Configuration et intégration Stripe (checkout + webhooks)
-- **[`DOCKER-COMPOSE-CONFIGS.md`](DOCKER-COMPOSE-CONFIGS.md)** - Architecture Docker et environnements (dev/nexus/prod)
+- **[`DOCKER-COMPOSE-CONFIGS.md`](DOCKER-COMPOSE-CONFIGS.md)** - Architecture Docker et environnements (dev/prod)
 - **[`INFRASTRUCTURE.md`](INFRASTRUCTURE.md)** - Infrastructure nginx-static et Traefik
 
 ### Checklists opérationnelles

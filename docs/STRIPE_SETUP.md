@@ -95,7 +95,7 @@ success_url = f'{base_url}/thanks/?session_id={{CHECKOUT_SESSION_ID}}'
 ```
 
 **Environnements supportés :**
-- Nexus (dev) : `http://pyx.nexus.local/`
+- Dev local : `http://localhost:8000/`
 - Production : `https://pyx.devamalix.fr/`
 
 **Pourquoi pas `request.build_absolute_uri()` ?**
@@ -186,15 +186,14 @@ Voir la [liste complète des cartes de test](https://stripe.com/docs/testing#car
 ### 1. Démarrer les containers
 
 ```bash
-cd /home/matth/nexus/dev-web/dm
-docker compose -f docker-compose.nexus.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 ### 2. Accéder à l'application
 
 ```bash
 # Ouvrir dans le navigateur
-http://dm.nexus.local/catalog/
+http://localhost:8000/catalog/
 ```
 
 ### 3. Parcours de test complet
@@ -265,7 +264,7 @@ http://dm.nexus.local/catalog/
 **Solution :**
 ```bash
 # Vérifier que les clés sont dans .env
-cat /home/matth/nexus/dev-web/dm/.env | grep STRIPE
+cat .env | grep STRIPE
 
 # Redémarrer le container pour recharger .env
 docker restart dm_web
@@ -345,7 +344,7 @@ docker exec dm_web pytest core/test_stripe.py -v
 
 ```bash
 # 1. Test injection SQL
-curl "http://pyx.nexus.local/product/test'; DROP TABLE products;--/"
+curl "http://localhost:8000/product/test'; DROP TABLE products;--/"
 # Résultat attendu : 404 (pas d'erreur SQL)
 
 # 2. Test XSS (créer produit avec script dans nom via admin Django)
@@ -372,7 +371,7 @@ brew install stripe/stripe-cli/stripe
 **Rediriger webhooks en local :**
 ```bash
 # Forward webhooks vers votre environnement local
-stripe listen --forward-to http://pyx.nexus.local/webhook/
+stripe listen --forward-to http://localhost:8000/webhook/
 
 # Copier le webhook signing secret affiché (commence par whsec_)
 # L'ajouter dans .env comme STRIPE_WEBHOOK_SECRET
@@ -408,7 +407,7 @@ docker logs -f dm_web
 **Vérifier dans l'admin Django :**
 ```bash
 # Accéder à l'admin
-http://pyx.nexus.local/admin/core/order/
+http://localhost:8000/admin/core/order/
 
 # Vérifier que l'Order a été créé avec :
 # - Email correct
